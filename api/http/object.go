@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"project_university/api/http/types"
@@ -61,7 +60,7 @@ func (h *Handler) postNoteHandler(w http.ResponseWriter, r *http.Request) {
 		types.CreateHandlerRespose(w, err, nil)
 		return
 	}
-	fmt.Printf("POST")
+	log.Printf("POST")
 }
 
 func (h *Handler) putTitleNoteHandler(w http.ResponseWriter, r *http.Request) {
@@ -79,17 +78,17 @@ func (h *Handler) putTitleNoteHandler(w http.ResponseWriter, r *http.Request) {
 		types.CreateHandlerRespose(w, err, nil)
 		return
 	}
-	newData.Title = req.NewTitle
 	newData.Text = oldData.Text
 	if err = h.noteSrv.Delete(oldData); err != nil {
 		types.CreateHandlerRespose(w, err, nil)
 		return
 	}
+	newData.Title = req.NewTitle
 	if err = h.noteSrv.Post(&newData); err != nil {
 		types.CreateHandlerRespose(w, err, nil)
 		return
 	}
-	fmt.Printf("PUT")
+	log.Printf("PUT")
 }
 
 func (h *Handler) putTextNoteHandler(w http.ResponseWriter, r *http.Request) {
@@ -104,7 +103,7 @@ func (h *Handler) putTextNoteHandler(w http.ResponseWriter, r *http.Request) {
 		types.CreateHandlerRespose(w, err, nil)
 		return
 	}
-	fmt.Printf("PUT")
+	log.Printf("PUT")
 }
 
 func (h *Handler) deleteNoteHandler(w http.ResponseWriter, r *http.Request) {
@@ -119,7 +118,7 @@ func (h *Handler) deleteNoteHandler(w http.ResponseWriter, r *http.Request) {
 		types.CreateHandlerRespose(w, err, nil)
 		return
 	}
-	fmt.Printf("DELETE")
+	log.Printf("DELETE")
 }
 
 func (h *Handler) registerHandler(w http.ResponseWriter, r *http.Request) {

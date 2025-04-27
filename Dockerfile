@@ -6,6 +6,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
+RUN apk add --no-cache make
 RUN go build -o main cmd/app/main.go
 
 FROM alpine AS runner

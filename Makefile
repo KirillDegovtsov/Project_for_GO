@@ -1,7 +1,7 @@
-local.run:
-	go run ./cmd/app/main.go
+app_run: build run
 
-docker.run:
-	docker compose --env-file ./docker.env up -d
-docker.run.db:
-	docker compose --env-file ./docker.env up -d postgres
+build:
+	docker build -t note_server -f Dockerfile .
+
+run: 
+	docker run -p 8080:8080 note_server

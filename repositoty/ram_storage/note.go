@@ -5,7 +5,7 @@ import (
 )
 
 type Titles struct {
-	data map[string]string
+	data map[string]*domain.Note
 }
 
 type Note struct {
@@ -25,19 +25,19 @@ func (n *Note) Get(note *domain.Note) (*domain.Note, error) {
 	if _, err := n.data[note.UserId].data[note.Title]; !err {
 		return nil, domain.NoteNotFound
 	}
-	return &domain.Note{Title: note.Title, Text: n.data[note.UserId].data[note.Title], UserId: note.UserId}, nil
+	return n.data[note.UserId].data[note.Title], nil
 }
 
 func (n *Note) Post(note *domain.Note) error {
 	if _, err := n.data[note.UserId]; !err {
 		n.data[note.UserId] = &Titles{
-			data: make(map[string]string),
+			data: make(map[string]*domain.Note),
 		}
 	}
 	if _, err := n.data[note.UserId].data[note.Title]; err {
 		return domain.NoteAlreadyExists
 	}
-	n.data[note.UserId].data[note.Title] = note.Text
+	n.data[note.UserId].data[note.Title] = note
 	return nil
 }
 
@@ -48,7 +48,7 @@ func (n *Note) Put(note *domain.Note) error {
 	if _, err := n.data[note.UserId].data[note.Title]; !err {
 		return domain.NoteNotFound
 	}
-	n.data[note.UserId].data[note.Title] = note.Text
+	n.data[note.UserId].data[note.Title] = note
 	return nil
 }
 

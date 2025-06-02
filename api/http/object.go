@@ -11,11 +11,8 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-// вызвать в маин гарпиш колектор для всех сессий по времени
 // сделать свэгер
-// добавить логирование
-// написать тесты
-// прикрутить нджиникс
+// прикрутит постгресс
 
 type Handler struct {
 	noteSrv    usecases.Note
@@ -45,7 +42,11 @@ func (h *Handler) getNoteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	log.Printf("GET")
-	types.CreateHandlerRespose(w, nil, types.NoteHandler{Title: resp.Title, Text: resp.Text})
+	types.CreateHandlerRespose(w, nil, types.NoteHandler{Title: resp.Title, Text: resp.Text,
+		CreatedTime: types.TimeValue{Year: resp.CreatedTime.Year(),
+			Month: resp.CreatedTime.Month(), Day: resp.CreatedTime.Day()},
+		LastChange: types.TimeValue{Year: resp.LastChange.Year(),
+			Month: resp.LastChange.Month(), Day: resp.LastChange.Day()}})
 }
 
 func (h *Handler) postNoteHandler(w http.ResponseWriter, r *http.Request) {

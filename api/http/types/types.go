@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"project_university/domain"
+	"time"
 )
 
 type GetDeleteNoteHandlerRequest struct {
@@ -18,9 +19,17 @@ func CreateGetDeleteNoteHandlerRequest(r *http.Request) (*domain.Note, error) {
 	return &domain.Note{Title: req.Title}, nil
 }
 
+type TimeValue struct {
+	Year  int        `json:"year"`
+	Month time.Month `json:"month"`
+	Day   int        `json:"day"`
+}
+
 type NoteHandler struct {
-	Title string `json:"title"`
-	Text  string `json:"text"`
+	Title       string    `json:"title"`
+	Text        string    `json:"text"`
+	CreatedTime TimeValue `json:"created_time"`
+	LastChange  TimeValue `json:"last_change"`
 }
 
 func CreatePostPutNoteHandlerRequest(r *http.Request) (*domain.Note, error) {

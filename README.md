@@ -2,7 +2,7 @@
 
 
 # Запуск:
-make docker_run
+make app_run
 
 
 # Тестирование

@@ -2,10 +2,12 @@ package service
 
 import (
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/base64"
 	"io"
 	"project_university/domain"
 	"project_university/repositoty"
+	"time"
 
 	"golang.org/x/crypto/chacha20poly1305"
 )
@@ -16,10 +18,7 @@ type Note struct {
 }
 
 func NewNote(repo repositoty.Note) (*Note, error) {
-	key, err := MakeKey()
-	if err != nil {
-		return nil, err
-	}
+	key := MakeKey()
 	return &Note{
 		repo: repo,
 		key:  key,
@@ -36,6 +35,8 @@ func (n *Note) Get(note *domain.Note) (*domain.Note, error) {
 		return nil, err
 	}
 	note.Text = decrypted
+	note.CreatedTime = data.CreatedTime
+	note.LastChange = data.LastChange
 	return note, nil
 }
 
@@ -45,6 +46,7 @@ func (n *Note) Post(note *domain.Note) error {
 		return err
 	}
 	note.Text = encrypted
+	note.CreatedTime = time.Now()
 	return n.repo.Post(note)
 }
 
@@ -54,6 +56,12 @@ func (n *Note) Put(note *domain.Note) error {
 		return err
 	}
 	note.Text = encrypted
+	data, err := n.repo.Get(note)
+	if err != nil {
+		return err
+	}
+	note.CreatedTime = data.CreatedTime
+	note.LastChange = time.Now()
 	return n.repo.Put(note)
 }
 
@@ -96,10 +104,7 @@ func Decrypt(encrypted string, key []byte) (string, error) {
 	return string(decripted), nil
 }
 
-func MakeKey() ([]byte, error) {
-	key := make([]byte, chacha20poly1305.KeySize)
-	if _, err := rand.Read(key); err != nil {
-		return nil, domain.InternalError
-	}
-	return key, nil
+func MakeKey() []byte {
+	hash := sha256.Sum256([]byte("my-secret-passphrase"))
+	return hash[:]
 }
